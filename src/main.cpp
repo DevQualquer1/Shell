@@ -2,57 +2,42 @@
 #include <string.h>
 #include <stdlib.h>
 
-/*
-    #if defined(_WIN32) || defined(_WIN64)
-        system("cls");      // Comando para o Windows
-    #else
-        system("clear");    // Comando para Linux / macOS
-    #endif
-*/
-    
-
-class Comando{
-    char comandoBase[21];
-    char parametros[21];
-public:
-
-    virtual  void executar_comando() = 0;
-
-    void set_comandoBase(char *comandoBase){
-        strcpy(this->comandoBase, comandoBase);
-    }
-
-    void set_parametros(char *parametros){
-        strcpy(this->parametros, parametros);
-    }
-
-};
-
-class Comando_Echo: public Comando{
-public:
-    void executar_comando(){
-        
-    }
-
-
-};
-
-void menu(){
-
-}
+#include "FilesH/comandoModel.h"
+#include "FilesH/comandoEcho.h"
 
 int main(){
 
-    char arg1[21];
-    char arg2[21];
+    /* #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #else
+        system("clear");
+    #endif */
+
+    char linha[100];
+    const char *arg1;
+    const char *arg2;
 
     while (true){
         printf("myshell> ");
-        scanf("%s", &arg1);
-        scanf("%s", &arg2);
+        fgets(linha, sizeof(linha), stdin);
+        linha[strcspn(linha, "\n")] = '\0';
+        
+        arg1 = strtok(linha, " ");
+
+        if(arg1 == NULL){
+            continue;
+        }
+
+        arg2 = strtok(NULL, "");
+
+        if(arg2 == NULL){
+            arg2 = " ";
+        }
+
+        Comando_Echo echo(arg2);
 
         if (strcmp(arg1, "echo") == 0){
-            printf("%s\n", arg2);
+            echo.executar_comando();
         }
     }
 
